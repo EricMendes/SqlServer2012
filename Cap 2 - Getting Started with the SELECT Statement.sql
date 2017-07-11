@@ -2,9 +2,35 @@
 
 Lesson 1
 
+A cláusula FROM é a primeira a ser avaliada logicamente e tem dois papéis principais:
+ 
+ - É a cláusula onde você indica as tabelas que você quer consultar.
+ - É a cláusula onde você pode aplicar operadores de tabela como "joins".
+
+Como exemplo básico, presumindo que você esteja conectado no database exemplo TSQL2012, a consulta abaixo usa a cláusula FROM para especificar que a tabela que está sendo consultada é a "Employees" do SCHEMA "HR"
+
+*/
+
+SELECT empid, firstname, lastname
+FROM HR.Employees;
+
+*/
+
+Você pode usar um ALIAS em uma tabela também
+
+*/
+
+SELECT E.empid, firstname, lastname
+FROM HR.Employees AS E;
+
+
+*/
+
+
 A cláusula SELECT de uma consulta tem dois papéis principais:
+
  - Avaliar as expressões que definem os atributos de uma consulta, atribuindo a eles ALIAS se necessário.
- - Usando uma clásula DISTINCT, você pode eliminar linhas duplicadas no resultado se for necessário.
+ - Usando uma clásula DISTINCT, você pode eliminar linhas duplicadas no resultado.
  
 
 Apesar de não ser necessário, para atribuir um ALIAS a um atributo, prefira usar o "AS" para deixar o código mais legível e menos suscetível a erros.

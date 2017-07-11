@@ -14,7 +14,7 @@ Como exemplo básico, presumindo que você esteja conectado no database exemplo TS
 SELECT empid, firstname, lastname
 FROM HR.Employees;
 
-*/
+/*
 
 Você pode usar um ALIAS em uma tabela também
 
@@ -24,7 +24,7 @@ SELECT E.empid, firstname, lastname
 FROM HR.Employees AS E;
 
 
-*/
+/*
 
 
 A cláusula SELECT de uma consulta tem dois papéis principais:

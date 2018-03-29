@@ -1,0 +1,409 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ClassLibrary
+{
+    public class Client
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public Gender Gender { get; set; }
+        public DateTime BirthDate { get; set; }
+    }
+
+    public enum Gender
+    {
+        Male = 1,
+        Female = 2
+    }
+}
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace ClassLibrary
+{
+    public interface ITask
+    {
+        string Execute(string payload);
+    }
+
+    public interface IPropertyCustomizable
+    {
+        IEnumerable<TaskProperty> GetCustomProperties();
+        void SetCustomProperty(string propertyName, string propertyValue);
+    }
+
+    public interface IValidated
+    {
+        IEnumerable<string> ValidationErrors { get; }
+        bool IsValid();
+    }
+
+    public abstract class Task : ITask
+    {
+        public int Id { get; protected set; }
+        public string Name { get; protected set; }
+        public string Description { get; protected set; }
+        public TaskType Type { get; protected set; }
+        public TaskStatus Status { get; protected set; }
+        public string In { get; private set; }
+        public string Out { get; private set; }
+        public string Execute(string payload)
+        {
+            var retorno = string.Empty;
+            Status = TaskStatus.Started;
+            In = payload;
+            OnExecuteStart?.Invoke(this, EventArgs.Empty);
+            retorno = ExecuteTask(payload);
+            Out = retorno;
+            OnExecuteFinish?.Invoke(this, EventArgs.Empty);
+            Status = TaskStatus.Success;
+            return retorno;
+        }
+
+        public event ExecuteStartEventHandler OnExecuteStart;
+        public event ExecuteFinishEventHandler OnExecuteFinish;
+        
+        protected abstract string ExecuteTask(string payload);
+    }
+
+    public class TaskExecutionEventArgs: EventArgs
+    {
+        public TaskStatus Status { get; set; }
+    }
+
+    public delegate void ExecuteStartEventHandler(object sender, EventArgs e);
+    public delegate void ExecuteFinishEventHandler(object sender, EventArgs e);
+
+    public enum TaskStatus
+    {
+        Started = 1,
+        Success = 2,
+        Failed = 3
+    }
+
+    public class MandatoryFieldMissingException: ApplicationException
+    {
+        public MandatoryFieldMissingException(string message): base(message)
+        {
+
+        }
+    }
+
+}
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ClassLibrary
+{
+    public class Page<T>: List<T>
+    {
+        public int TotalPages { get; set; }
+        public int CurrentPage { get; set; }
+        public int RegistersPerPage { get; set; }
+        public int TotalRegisters { get; set; }
+    }
+
+    public interface IRepositoryBase<T> where T : class
+    {
+        void Save(T entity);
+        T GetById(int id);
+        IEnumerable<T> GetAll();
+        IEnumerable<T> GetAll(Func<T, bool> filters);
+
+    }
+
+    public interface IPagedRepositoryBase<T>: IRepositoryBase<T> where T : class 
+    {
+        Page<T> GetPage(Func<T, bool> filters, int pageNumber, int recordsPerPage, Func<IEnumerable<T>, IEnumerable<T>> order);
+    }
+
+    public class RepositoryBase<T> : IRepositoryBase<T> where T : class
+    {
+        public IEnumerable<T> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<T> GetAll(Func<T, bool> filters)
+        {
+            throw new NotImplementedException();
+        }
+
+        public T GetById(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Save(T entity)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+
+    public class PagedRepositoryBase<T> : RepositoryBase<T>, IPagedRepositoryBase<T> where T : class
+    {
+        public Page<T> GetPage(Func<T, bool> filters, int pageNumber, int recordsPerPage, Func<IEnumerable<T>, IEnumerable<T>> order)
+        {
+            var entities = ClientList.GetClientList()  as IEnumerable<T>;//Substituir pela consulta no EF
+
+            var skip = (pageNumber - 1) * recordsPerPage;
+            var totalCount = entities.Count();
+            double totalPages = Math.Ceiling(totalCount / (double)recordsPerPage);
+            entities = entities.Where(filters);
+            if (order != null)
+            {
+                entities = order(entities);
+            }
+            entities = entities.Skip(skip).Take(recordsPerPage);
+
+            Page<T> pagedEntity = new Page<T>();
+            pagedEntity.AddRange(entities);
+            pagedEntity.TotalPages = Convert.ToInt32(totalPages);
+            pagedEntity.TotalRegisters = totalCount;
+            pagedEntity.CurrentPage = pageNumber;
+            pagedEntity.RegistersPerPage = recordsPerPage;
+
+            return pagedEntity;
+        }
+    }
+
+    public static class ClientList 
+    {
+        public static List<Client> GetClientList()
+        {
+            var clientlist = new List<Client>();
+
+            clientlist.Add(new Client()
+            {
+                Id = 1,
+                Name = "Eric Mendes de Souza",
+                Gender = Gender.Male,
+                BirthDate = new DateTime(1981, 2, 9)
+            });
+            clientlist.Add(new Client()
+            {
+                Id = 2,
+                Name = "Lilian Castro Kelian",
+                Gender = Gender.Female,
+                BirthDate = new DateTime(1986, 4, 24)
+            });
+            clientlist.Add(new Client()
+            {
+                Id = 3,
+                Name = "Maria Luiza Carvalho Mendes",
+                Gender = Gender.Female,
+                BirthDate = new DateTime(2012, 1, 4)
+            });
+            clientlist.Add(new Client()
+            {
+                Id = 4,
+                Name = "Cauã Kelian Kulaif",
+                Gender = Gender.Male,
+                BirthDate = new DateTime(2004, 10, 31)
+            });
+            clientlist.Add(new Client()
+            {
+                Id = 5,
+                Name = "André Kelian Kulaif",
+                Gender = Gender.Male,
+                BirthDate = new DateTime(2007, 5, 15)
+            });
+
+            return clientlist;
+        }
+    }
+
+    public class ClientRepository : PagedRepositoryBase<Client>
+    {
+        
+    }
+}
+
+
+
+using System;
+
+namespace ClassLibrary
+{
+    public class TaskProperty
+    {
+        public string Name { get; set; }
+        public string Type { get; set; }
+        public bool IsMandatory { get; set; }
+    }
+
+    public enum PropertyType
+    {
+        String = 1,
+        Int = 2,
+        Double = 3,
+        Boolean = 4
+    }
+
+    public class PropertyConverter
+    {
+
+    }
+}
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ClassLibrary
+{
+    public class TaskType
+    {
+    }
+}
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ClassLibrary
+{
+    public class TxtSourceTask : Task, IPropertyCustomizable, IValidated
+    {
+        public char? Separator { get; private set; }
+        private bool HasHeader { get; set; }
+        public List<TaskProperty> CustomProperties { get; set; }
+        public IEnumerable<string> ValidationErrors { get { return validationErrors; } }
+        private List<string> validationErrors { get; set; }
+        public TxtSourceTask()
+        {
+            validationErrors = new List<string>();
+            CustomProperties = new List<TaskProperty>();
+            InitializeCustomProperties();
+        }
+
+        private void InitializeCustomProperties()
+        {
+            var separator = new TaskProperty()
+            {
+                Name = "Separator",
+                IsMandatory = true,
+                Type = "char"
+            };
+            CustomProperties.Add(separator);
+
+            var hasValue = new TaskProperty()
+            {
+                Name = "HasValue",
+                IsMandatory = false,
+                Type = "bool"
+            };
+            CustomProperties.Add(hasValue);
+        }
+
+        public bool IsValid()
+        {
+            validationErrors.Clear();
+            bool isValid = false;
+            if (Separator == null)
+            {
+                validationErrors.Add("Separator não está definido.");
+            }
+            else
+            {
+                isValid = true;
+            }
+            return isValid;
+        }
+
+        protected override string ExecuteTask(string payload)
+        {
+            if (IsValid())
+            {
+                return payload.Replace(Separator.Value, ';');
+            }
+            else
+            {
+                throw new MandatoryFieldMissingException("Uma ou mais propriedades obrigatórias não foram preenchidas. Analise a propriedade ValidationErrors para mais detalhes.");
+            }
+        }
+
+        public IEnumerable<TaskProperty> GetCustomProperties()
+        {
+            return CustomProperties;
+        }
+
+        public void SetCustomProperty(string propertyName, string propertyValue)
+        {
+            switch (propertyName.ToLower())
+            {
+                case "separator":
+                    char separator;
+                    Char.TryParse(propertyValue, out separator);
+                    Separator = separator;
+                    break;
+                case "hasheader":
+                    bool hasheader;
+                    bool.TryParse(propertyValue, out hasheader);
+                    HasHeader = hasheader;
+                    break;
+                default:
+                    throw new Exception("Propriedade não encontrada.");
+            }
+        }
+    }
+}
+using ClassLibrary;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApplication
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            TxtSourceTask txtSourceTask = new TxtSourceTask();
+            var properties = txtSourceTask.GetCustomProperties();
+            foreach (var item in properties)
+            {
+                Console.WriteLine("Name:{0}, Type:{1}, IsMandatory:{2}.", item.Name, item.Type, item.IsMandatory);
+            }
+
+            string valueToConvert = "Eric,M,36";
+            txtSourceTask.SetCustomProperty("separator", ",");
+            string retorno = txtSourceTask.Execute(valueToConvert);
+            sw.Stop();
+
+            Console.WriteLine(sw.Elapsed);
+            Console.WriteLine(retorno);
+
+            //ClientRepository repository = new ClientRepository();
+            //var clients = repository.GetPage(c => c.Id < 10, 1, 5, x => x.OrderBy(c => c.Gender).ThenBy(c => c.BirthDate));
+            //foreach (var item in clients)
+            //{
+            //    Console.WriteLine("Cliente {0}, Nome: {1}, Sexo: {2}, Nascimento: {3}.", item.Id, item.Name, item.Gender, item.BirthDate);
+            //}
+            //Console.WriteLine("Página {0} de {1}. Mostrando {2} registros de um total de {3}", clients.CurrentPage, clients.TotalPages, clients.RegistersPerPage, clients.TotalRegisters);
+
+            Console.ReadKey();
+        }
+    }
+}

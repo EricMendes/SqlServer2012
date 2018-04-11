@@ -407,3 +407,20 @@ namespace ConsoleApplication
         }
     }
 }
+
+Ferramentas e Técnicas para data analytics voltado para a saúde
+
+O domínio de informações de assitência médica é rico mas necessita ser transformado em conhecimento. As ferramentas e 
+
+técnicas efetivas são formuladas para descobrir relações e tendências escondidas. Kavakiotis cita uma sistemática e detalhada 
+
+revisão na aplicação de técnicas de mineração de dados e machine learning para realizar análise da diabete mellitus para 
+
+predição e diagnóstico, achando associações complicadas com isso e com a herança genética e ambiente para conseguir melhoras 
+
+na assistência médica. Existem várias técnicas de mineração de dados sendo usadas na indústria da saúde para várias doenças 
+
+usando métodos de classificação que foram demonstrados em vários estudos de caso de sucesso, eles são na maioria rule-based, 
+
+rede neural artificial e árvores de decisão.
+A arquitetura segura para análise de big data é regulada pela CSA (Cloud Secure Alliance). Quando usada na assistência médica, EHR 

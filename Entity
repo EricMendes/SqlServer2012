@@ -408,19 +408,68 @@ namespace ConsoleApplication
     }
 }
 
-Ferramentas e Técnicas para data analytics voltado para a saúde
+De acordo com pesquisas, dados médicos apenas dos EUA vão além de 150 exabytes em 2011 e tem potencial de ir além, para zettabytes (1021 bytes) e yottabytes
+
+(1024 gigabytes). A análise dos dados se torna o gargalo por causa dessa magnitude. Portanto, especialistas no domínio de cuidados médicos estão olhando para 
+
+a ciência da computação investigar e chegar a
+às soluções para transformar dados em informação e conhecimento. 
+
+Técnicas e Ferramentas para análise de dados de assistência médica
+
 
 O domínio de informações de assitência médica é rico mas necessita ser transformado em conhecimento. As ferramentas e 
-
 técnicas efetivas são formuladas para descobrir relações e tendências escondidas. Kavakiotis cita uma sistemática e detalhada 
-
 revisão na aplicação de técnicas de mineração de dados e machine learning para realizar análise da diabete mellitus para 
-
 predição e diagnóstico, achando associações complicadas com isso e com a herança genética e ambiente para conseguir melhoras 
-
 na assistência médica. Existem várias técnicas de mineração de dados sendo usadas na indústria da saúde para várias doenças 
-
 usando métodos de classificação que foram demonstrados em vários estudos de caso de sucesso, eles são na maioria rule-based, 
-
 rede neural artificial e árvores de decisão.
-A arquitetura segura para análise de big data é regulada pela CSA (Cloud Secure Alliance). Quando usada na assistência médica, EHR 
+A arquitetura segura para análise de big data é regulada pela CSA (Cloud Secure Alliance). Quando usada na assistência médica, EHR se torna o conjunto de 
+
+dados de entrada para uma plataforma de analytics tendo HDFS com FLUME e SQOOP como a camada de dados. MapReduce e HIVE fazem a análise dos dados usando 
+
+algoritmos de machine learning. STORM é uma ferramenta de streaming usada para qualquer emergência chegando e intimando toda a equipe de saúde em questão 
+
+imediatamente através da função do AWS Lambda. Intellicius and hunk produzem os relatórios.
+
+Benefícios das técnicas de mineração de dados no setor de saúde:
+
+- Modelagem de dados com segurança para sistemas de saúde.
+- Formulação do custo do tratamento e disponibilidade de recursos, conforme necessário.
+- Previsão comportamental futura baseada na história do paciente.
+- Elaboração de sistema executivo de informação em saúde.
+- Informática em saúde pública.
+- Implementando estruturas de e-governance nos cuidados médicos.
+- Plano de saúde
+
+-Gerenciamento do usuário.
+-Gerenciamento de coleção.
+-Gerenciamento de wishlist.
+-Sugestão de trocas.
+-Avaliação de usuários com quem você trocou.
+-Avaliação de jogos.
+
+Organizações da saúde podem implementar KDD (Knowledge Discovery in Databases) usando frameworks definidos em [***] com a ajuda de recursos qualificados que 
+
+estão bem familiarizado com o jargão médico coletado através de diferentes fontes.
+Machine Learning e Data Mining se sobrepõem em alguns pontos durante a classificação. A mineração de dados está percebendo as informações anteriormente 
+
+desconhecidas onde irmão que é aprendizado de máquina é conhecido desde a década de 1960 e se concentra na classificação e previsão. Algoritmos de 
+
+aprendizado de máquina avaliam ou predizem resultados com base em
+informação previamente conhecida utilizando-a como um conjunto de treinamento.
+ 
+Existem muitas questões sobre avaliação clínica de pacientes que pode ser respondida com base na relação encontrada pela análise de milhões de pacientes 
+
+registros armazenados no KDD. 
+Perguntas podem ser tais como:
+
+- Com base nos sintomas do paciente, quais testes devem ser recomendados para diagnóstico?
+- Se esses problemas relacionados à saúde ocorrem, então qual possível doença é mais possível?
+- Quais são os sintomas mais comuns encontrados em pacientes diabéticos?
+- Qual é a faixa etária dos pacientes com doença cardíaca?
+- O faturamento padrão para um diagnóstico específico é quanto?
+
+
+Técnicas de classificação e agrupamento

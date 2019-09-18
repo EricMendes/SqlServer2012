@@ -1,3 +1,31 @@
+public static class EnumHelpers
+    {
+        public static string GetDescription(Enum val)
+        {
+            FieldInfo fi = val.GetType().GetField(val.ToString());
+            DescriptionAttribute[] attributes = fi.GetCustomAttributes(typeof(DescriptionAttribute), false) as DescriptionAttribute[];
+            if (attributes != null && attributes.Any())
+            {
+                return attributes.First().Description;
+            }
+
+            return val.ToString();
+        }
+
+        public static Dictionary<int, string> ToDictionary<T>(this Enum val)
+        {
+            var dictionary = new Dictionary<int, string>();
+            var values = Enum.GetValues(typeof(T));
+            foreach (var value in values)
+            {
+                int key = (int)value;
+                dictionary.Add(key, GetDescription((Enum)value));
+            }
+
+            return dictionary;
+        }
+    }
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
